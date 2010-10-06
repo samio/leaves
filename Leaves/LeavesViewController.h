@@ -18,5 +18,7 @@
 
 - (id)init;
 
+@property(nonatomic,retain,readonly) LeavesView *leavesView;
+
 @end
 

@@ -344,6 +344,55 @@ CGFloat distance(CGPoint a, CGPoint b);
 	[CATransaction commit];
 }
 
+- (void) turnToNextPageWithDuration:(NSTimeInterval)duration {
+	NSUInteger pageIndex = currentPageIndex + 1;
+	if ([self hasNextPage]) {
+		[CATransaction begin];
+		[CATransaction setValue:[NSNumber numberWithFloat:duration]
+						 forKey:kCATransactionAnimationDuration];
+		//float duration;
+		[self willTurnToPageAtIndex:pageIndex];
+		self.leafEdge = 0;
+		//duration = leafEdge;
+		interactionLocked = YES;
+		if (pageIndex+1 < numberOfPages && backgroundRendering)
+			[pageCache precacheImageForPageIndex:pageIndex+1];
+		[self performSelector:@selector(didTurnPageForward)
+				   withObject:nil 
+				   afterDelay:duration + 0.25];
+		[CATransaction commit];
+	}
+}
+
+- (void) turnToPrevPageWithDuration:(NSTimeInterval)duration {
+	NSUInteger pageIndex = currentPageIndex-1;
+	if ([self hasPrevPage]) {
+		[CATransaction begin];
+		[CATransaction setValue:(id)kCFBooleanTrue
+						 forKey:kCATransactionDisableActions];
+		self.currentPageIndex = pageIndex;
+		self.leafEdge = 0.0;
+		[CATransaction commit];
+		[self performSelector:@selector(completeBackwardsPageTurn:) withObject:[NSNumber numberWithFloat:duration] afterDelay:0.01];
+	}
+}
+
+- (void)completeBackwardsPageTurn:(NSNumber*)duration {
+	[CATransaction begin];
+	[CATransaction setValue:duration
+					 forKey:kCATransactionAnimationDuration];
+	//float duration;
+	[self willTurnToPageAtIndex:currentPageIndex];
+	self.leafEdge = 1.0;
+	//duration = 1 - leafEdge;
+	interactionLocked = YES;
+	[self performSelector:@selector(didTurnPageBackward)
+			   withObject:nil 
+			   afterDelay:[duration floatValue] + 0.25];
+	
+	[CATransaction commit];
+}
+
 - (void) layoutSubviews {
 	[super layoutSubviews];
 	

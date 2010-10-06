@@ -10,6 +10,8 @@
 
 @implementation LeavesViewController
 
+@synthesize leavesView;
+
 - (void) initialize {
    leavesView = [[LeavesView alloc] initWithFrame:CGRectZero];
 }

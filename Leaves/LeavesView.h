@@ -61,6 +61,9 @@
 // refreshes the contents of all pages via the data source methods, much like -[UITableView reloadData]
 - (void) reloadData;
 
+- (void) turnToNextPageWithDuration:(NSTimeInterval)duration;
+- (void) turnToPrevPageWithDuration:(NSTimeInterval)duration;
+
 @end
 
 
